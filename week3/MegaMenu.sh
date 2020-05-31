@@ -1,5 +1,15 @@
 #!/bin/bash
 
+RED=$'\e[1;31m'
+GREEN=$'\e[1;32m'
+NC=$'\e[1;0m'
+BLUE=$'\e[1;34m'
+BLACK=$'\e[1;30m'
+YELLOW=$'\e[1;33m'
+PURPLE=$'\e[1;35m'
+CYAN=$'\e[1;36m'
+GREY=$'\e[1;37m'
+
 # Ask what folder user wants to use
 read -p 'What folder are you using?: ' folderVar
 # Check if folder exists
@@ -13,12 +23,15 @@ fi
 cd $folderVar
 if [ -e secret.txt ]; then
     # Check users credentials
-    read -s -p 'Type a secret password: ' secretPassword # take password input from user
+    RED=$'\e[1;31m'
+    GREEN=$'\e[1;32m'
+    NC=$'\e[1;0m'
+    read -s -p ""$RED"Enter Password: "$NC"" secretPassword # take password input from user
     echo $secretPassword | sha256sum > secret.sha256 # hash the input from the user and store in file
     PasswordHash=secret.txt
     PasswordTry=secret.sha256
     if cmp -s "$PasswordHash" "$PasswordTry"; then
-        echo "Access granted"
+        echo -e "\n"$GREEN"Access granted "$NC""
     else
         echo "Access denied"
         exit 1
@@ -30,25 +43,27 @@ cd .. # Come back to parent directory
 # Show the main menu
 status=$?
 if test $status -eq 0 ;then
-	echo "1. Create a folder"
+    echo ""$BLUE"Select an Option: "
+	echo ""$PURPLE"1. Create a folder"
 	echo "2. Copy a folder"
 	echo "3. Set a password"
     echo "4. Calculator"
     echo "5. Create Week Folders"
     echo "6. Check Filenames"
     echo "7. Download a file"
-    echo "8. Exit"
+    echo ""$YELLOW"8. Exit"$NC""
 else
 	echo "Goodbye"
 fi
-echo "select an option"
 # take the user input of what option they selected
 read -p 'enter here: ' option
 echo "your option was ${option}"
 if test $option -eq 1; then
+# Option 2 - Create a folder
 	read -p "type the name of the folder you would like to create: " folderName
     mkdir "$folderName"
 elif test $option -eq 2; then
+# Option 2 - Copy a folder
     read -p "type the name of the folder you would like to copy: " folderName
     #if the name is a valid directory
     if [ -d "$folderName" ]; then
@@ -60,6 +75,7 @@ elif test $option -eq 2; then
     echo "I couldn't find that folder"
     fi
 elif test $option -eq 3; then
+# Option 3 - Set a Password
 	read -p 'Type a folder name: ' folderName  #Get the new folder name from the user.
     if [ -d "$folderName" ]; then #check if folder already exists
         cd "$folderName" # if exists move into it
@@ -70,7 +86,30 @@ elif test $option -eq 3; then
     read -s -p 'Type a secret password:' secretPassword # Get a password from the user while hiding the input.
     echo "$secretPassword" | sha256sum  > secret.txt # Save a hashed version of the passowrd in a file in the new directory.
 elif test $option -eq 4; then
-    ./calculator.sh
+# Option 4 - Calculator
+    youranswer=0
+    read -p 'Enter first number: ' var1
+    read -p 'Enter expression (+, -, *, /): ' expression
+    read -p 'Enter second number: ' var2
+
+    case $expression in
+    "+" ) let youranswer=var1+var2 # Addition test
+        echo $'\e[1;34m'$var1 + $var2 = $youranswer$'\e[0m'
+    ;;
+    "-" ) let youranswer=var1-var2 # Subtraction test
+        echo $'\e[1;32m'$var1 - $var2 = $youranswer$'\e[0m'
+    ;;
+    "*" ) let youranswer=var1*var2 # Multiplication test
+        echo $'\e[1;31m'$var1 x $var2 = $youranswer$'\e[0m'
+    ;;
+    "/" ) let youranswer=var1/var2 # Division test
+        echo $'\e[1;35m'$var1 / $var2 = $youranswer$'\e[0m'
+    ;;
+    *) echo "Sorry, I cannot calculate those variables" # default case
+    ;;
+    esac
+    echo "equals $youranswer"
+
 elif test $option -eq 5; then
     ./megafoldermaker.sh
 elif test $option -eq 6; then
