@@ -4,11 +4,11 @@ import string
 import hashlib
 
 # Valid character set for passwords
-charset = string.ascii_lowercase #+ string.digits  #uncomment "+ string.digits" if including digits
+charset = string.ascii_lowercase + string.digits  #uncomment "+ string.digits" if including digits
 # Hidden password hash
 passwordHash = "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824"
 passwordLength = 5
-
+# Define a fucntion that generates passwords and then hashes it for comparison
 def Brute_Force(passwordHash, passwordLength):
     # Loop through all combinations of lowercase letters a-z and digits 0-9
     for i in range(passwordLength+1):
