@@ -60,7 +60,7 @@ read -p 'enter here: ' option
 echo "your option was ${option}"
 if test $option -eq 1; then
 # Option 2 - Create a folder
-	read -p "type the name of the folder you would like to create: " folderName
+    read -p "type the name of the folder you would like to create: " folderName
     mkdir "$folderName"
 elif test $option -eq 2; then
 # Option 2 - Copy a folder
@@ -76,7 +76,7 @@ elif test $option -eq 2; then
     fi
 elif test $option -eq 3; then
 # Option 3 - Set a Password
-	read -p 'Type a folder name: ' folderName  #Get the new folder name from the user.
+    read -p 'Type a folder name: ' folderName  #Get the new folder name from the user.
     if [ -d "$folderName" ]; then #check if folder already exists
         cd "$folderName" # if exists move into it
     else
@@ -111,6 +111,8 @@ elif test $option -eq 4; then
     echo "equals $youranswer"
 
 elif test $option -eq 5; then
+# Option 5 - Folder maker
+# Get user input to find how many folders need to be made
     read -p 'What number should we start making folders from?: ' start
     read -p 'What number should we stop making folders at?: ' end
     # For every number between the first argument and the last
@@ -121,11 +123,38 @@ elif test $option -eq 5; then
         mkdir "week$i"
     done
 elif test $option -eq 6; then
-    ./filenames.sh
+# Option 6 - Check file names
+# Get the name of the file that contains the filenames to check
+    read -p 'What is the name of the file (eg. filenames.txt)?: ' FILE
+    while read LINE; do
+        echo "name is: $LINE"
+        if [ -f "$LINE" ]; then
+            echo "$LINE: That file exists"
+        elif [ -e "$LINE" ]; then
+            echo "$LINE: That is a directory"
+        else 
+            echo "I don't know what that is!"
+        fi
+    done < $FILE
 elif test $option -eq 7; then
-    ./InternetDownloader.sh
+# Option 7 - Download a file
+    while [ "$website" != "exit" ] 
+    do
+        read -p 'Type a website URL to download or type exit to quit: ' website #get user input for where to download from
+        if [ "$website" = "exit" ]
+        then
+            echo "See you later alligator."
+            exit 0
+        else
+        # Get user input for the save location
+            read -p 'Type a download location: ' location
+        fi
+        echo "$website will be saved in $location :) "
+        wget --directory-prefix="$location" "$website"
+        echo "$website has been saved in $location :)"
+    done
 elif test $option -eq 8; then
     exit 0
 else
-	echo "not valid input"
+    echo "not valid input"
 fi
