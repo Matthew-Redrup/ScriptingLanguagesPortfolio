@@ -111,7 +111,15 @@ elif test $option -eq 4; then
     echo "equals $youranswer"
 
 elif test $option -eq 5; then
-    ./megafoldermaker.sh
+    read -p 'What number should we start making folders from?: ' start
+    read -p 'What number should we stop making folders at?: ' end
+    # For every number between the first argument and the last
+    for ((i = $start; i <= $end; i++))
+    do
+        # Create a new folder for that number
+        echo "Creating directory number $i"
+        mkdir "week$i"
+    done
 elif test $option -eq 6; then
     ./filenames.sh
 elif test $option -eq 7; then
